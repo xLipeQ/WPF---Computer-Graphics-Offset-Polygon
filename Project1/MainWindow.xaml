@@ -1,0 +1,156 @@
+﻿<Window x:Class="Project1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project1"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="768" Width="1024">
+
+    <Window.Resources>
+        <local:EmptyVisibilityConverter x:Key="EmptyToVisConv"/>
+        <local:CheckedToVisibilityConverter x:Key="CheckToVis"/>
+    </Window.Resources>
+    
+    <Grid Background="DarkBlue">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+
+        <Canvas x:Name="PolygonCanvas" 
+                MouseLeftButtonDown="PolygonCanvas_MouseDown"
+                MouseMove="PolygonCanvas_MouseMove"
+                PreviewMouseLeftButtonUp="PolygonCanvas_PreviewMouseLeftButtonUp"
+                Background="LightGray">
+
+        </Canvas>
+
+        <!--Functional Post-->
+        <Grid Grid.Column="1"  Background="#AAAAAA">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="0.3*"/>
+            </Grid.RowDefinitions>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                          Margin="10">
+                <StackPanel Orientation="Vertical" Width="170">
+                    <GroupBox Header="Actions">
+                        <StackPanel >
+                            <Button Content="Clear Canvas"
+                                    Width="80"
+                                    Height="30"
+                                    Click="Button_Click"/>
+                            <CheckBox Content="Bresenham" 
+                                      FontSize="15"
+                                      Margin="0 5"
+                                      IsChecked="{Binding Bresenham}"
+                                      HorizontalAlignment="Center"/>
+
+                            <Border Height="2" BorderThickness="1" BorderBrush="White"/>
+
+                            <StackPanel  HorizontalAlignment="Center">
+                                <RadioButton Content="Create" IsChecked="True"
+                                             Name="Create"
+                                             Checked="Mode_Checked"
+                                             GroupName="Mode"/>
+
+                                <RadioButton Content="Edit"
+                                             Name="EditRB"
+                                             Checked="Mode_Checked"
+                                             GroupName="Mode"/>
+
+                                <RadioButton Content="Otoczka"
+                                             Checked="Mode_Checked"
+                                             Name="OtoczkaRB"
+                                             GroupName="Mode"/>
+
+                                <Slider Height="30" Visibility="{Binding ElementName=OtoczkaRB, Path=IsChecked, Converter={StaticResource CheckToVis}}"
+                                        ValueChanged="Slider_ValueChanged" 
+                                        Maximum="100"
+                                        Minimum="0"/>
+                            </StackPanel>
+                            
+                            
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Created Polygons" 
+                              Visibility="{Binding Polygons.Count, Converter={StaticResource EmptyToVisConv}}">
+                        <ListView ItemsSource="{Binding Polygons}" 
+                                  Background="Transparent"
+                                  Name="PolygonSelection"
+                                  SelectionChanged="PolygonSelection_SelectionChanged">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" Background="Transparent"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </GroupBox>
+
+                    <GroupBox Header="Instructions: " Background="Transparent">
+                        <StackPanel Height="Auto">
+                            <GroupBox Header="Polygon">
+                                <StackPanel>
+                                    <TextBlock Text="1. Hold Shift to close Polygon!" 
+                                 Foreground="White" 
+                                 Background="Transparent"
+                                     TextWrapping="WrapWithOverflow"
+                                     Margin="0,0,0,5"/>
+                                    <TextBlock Text="2. Select Polygon above to move or make changes to it!" 
+                                 Foreground="White" 
+                                 Background="Transparent"
+                                     TextWrapping="Wrap"
+                                     Margin="0,0,0,5"/>
+                                    <TextBlock Text="3. Hold LeftAlt to move Polygon!" 
+                                 Foreground="White" 
+                                 Background="Transparent"
+                                     TextWrapping="Wrap"
+                                     Margin="0,0,0,5"/>
+                                </StackPanel>
+                            </GroupBox>
+                            <GroupBox Header="Edges">
+                                <StackPanel>
+                                    
+                                    <TextBlock Text="1. Hold LeftCtrl to insert verticle on edge!" 
+                                 Foreground="White" 
+                                 Background="Transparent"
+                                     TextWrapping="Wrap"
+                                     Margin="0,0,0,5"/>
+                                    
+                                    <TextBlock Text="2. Hold LeftShift make edge horizontal!" 
+                                 Foreground="White" 
+                                 Background="Transparent"
+                                     TextWrapping="Wrap"
+                                     Margin="0,0,0,5"/>
+                                    
+                                    <TextBlock Text="3. Hold LeftAlt make edge vertical!" 
+                                 Foreground="White" 
+                                 Background="Transparent"
+                                     TextWrapping="Wrap"
+                                     Margin="0,0,0,5"/>
+                                </StackPanel>
+                            </GroupBox>
+                           
+                            
+                        </StackPanel>
+                    </GroupBox>
+                    
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!--Log point-->
+            <GroupBox Grid.Row="1" Background="Transparent" Margin="10" Header="Log Messages">
+                <TextBlock Text="{Binding LogText}" TextWrapping="Wrap"
+                           TextAlignment="Center" Foreground="White"
+                           VerticalAlignment="Center"/>
+            </GroupBox>
+            
+            
+        </Grid>
+        
+    </Grid>
+    
+</Window>
